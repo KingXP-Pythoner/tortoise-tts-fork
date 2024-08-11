@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 from enum import auto
+=======
+>>>>>>> main
 import os
 import random
 import uuid
@@ -721,17 +724,6 @@ class TextToSpeech:
             wav_gen = self.hifi_decoder.inference(
                 gpt_latents.to(self.device), auto_conditioning
             )
-            # Explicitly free memory.
-            gpt_latents = None
-            del gpt_latents
-            codes = None
-            del codes
-            text_tokens = None
-            del text_tokens
-            auto_conditioning = None
-            del auto_conditioning
-            self.hifi_decoder = None
-            del self.hifi_decoder
             return wav_gen
 
     def deterministic_state(self, seed=None):
@@ -746,22 +738,3 @@ class TextToSpeech:
         # torch.use_deterministic_algorithms(True)
 
         return seed
-
-    def close(self):
-        """
-        Explicitly close literally everything that causes high memory usage.
-        """
-        import gc
-
-        self.autoregressive.inference_model = None
-        self.autoregressive = None
-        self.hifi_decoder.inference = None
-        self.rlg_auto = None
-        self.aligner = None
-        hifi_model = None
-        del self.aligner
-        del self.autoregressive
-        del self.hifi_decoder
-        del self.rlg_auto
-        gc.collect()
-        # del any potentially high variables not being related to torch usage which mean not using torch.cuda.empty_cache()
